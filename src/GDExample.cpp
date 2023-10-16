@@ -27,8 +27,9 @@ void GDExample::_process( double delta )
 {
     time_passed += delta;
 
-    Vector2 new_position = Vector2( amplitude + ( amplitude * sin( time_passed * 2.0 ) ),
-                                    amplitude + ( amplitude * cos( time_passed * 1.5 ) ) );
+    Vector2 new_position =
+        Vector2( static_cast<float>( amplitude + ( amplitude * sin( time_passed * 2.0 ) ) ),
+                 static_cast<float>( amplitude + ( amplitude * cos( time_passed * 1.5 ) ) ) );
 
     set_position( new_position );
 }

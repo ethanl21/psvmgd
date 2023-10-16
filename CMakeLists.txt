@@ -27,7 +27,7 @@ if ( APPLE )
 endif()
 
 # Main project information
-project( GDExtensionTemplate
+project( psvmgd
     LANGUAGES
         CXX
     VERSION

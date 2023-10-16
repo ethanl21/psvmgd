@@ -19,12 +19,13 @@ using namespace godot;
 /// @param p_level the level being initialized by Godot
 ///
 /// @see GDExtensionInit
-void initialize_gdextension_types(ModuleInitializationLevel p_level)
+void initialize_gdextension_types( ModuleInitializationLevel p_level )
 {
-    if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+    if ( p_level != MODULE_INITIALIZATION_LEVEL_SCENE )
+    {
         return;
     }
-    //ClassDB::register_class<YourClass>();
+    // ClassDB::register_class<YourClass>();
     ClassDB::register_class<GDExample>();
 
     godot::ClassDB::register_class<GDExtensionTemplate>();
@@ -33,12 +34,13 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 /// @brief Called by Godot to let us do any cleanup.
 ///
 /// @see GDExtensionInit
-void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
-    if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+void uninitialize_gdextension_types( ModuleInitializationLevel p_level )
+{
+    if ( p_level != MODULE_INITIALIZATION_LEVEL_SCENE )
+    {
         return;
     }
 }
-
 
 extern "C"
 {
@@ -52,29 +54,31 @@ extern "C"
     /// @param r_initialization the intialization (need more info)
     ///
     /// @returns GDExtensionBool
-//    GDExtensionBool GDE_EXPORT GDExtensionInit(
-//        GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library,
-//        GDExtensionInitialization *r_initialization )
-//    {
-//        {
-//            godot::GDExtensionBinding::InitObject init_obj( p_get_proc_address, p_library,
-//                                                            r_initialization );
-//
-//            init_obj.register_initializer( initializeExtension );
-//            init_obj.register_terminator( uninitializeExtension );
-//            init_obj.set_minimum_library_initialization_level(
-//                godot::MODULE_INITIALIZATION_LEVEL_SCENE );
-//
-//            return init_obj.init();
-//        }
-//    }
+    //    GDExtensionBool GDE_EXPORT GDExtensionInit(
+    //        GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr
+    //        p_library, GDExtensionInitialization *r_initialization )
+    //    {
+    //        {
+    //            godot::GDExtensionBinding::InitObject init_obj( p_get_proc_address, p_library,
+    //                                                            r_initialization );
+    //
+    //            init_obj.register_initializer( initializeExtension );
+    //            init_obj.register_terminator( uninitializeExtension );
+    //            init_obj.set_minimum_library_initialization_level(
+    //                godot::MODULE_INITIALIZATION_LEVEL_SCENE );
+    //
+    //            return init_obj.init();
+    //        }
+    //    }
 
-    GDExtensionBool GDE_EXPORT GDExtensionInit(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization)
+    GDExtensionBool GDE_EXPORT GDExtensionInit(
+        GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library,
+        GDExtensionInitialization *r_initialization )
     {
-        GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
-        init_obj.register_initializer(initialize_gdextension_types);
-        init_obj.register_terminator(uninitialize_gdextension_types);
-        init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+        GDExtensionBinding::InitObject init_obj( p_get_proc_address, p_library, r_initialization );
+        init_obj.register_initializer( initialize_gdextension_types );
+        init_obj.register_terminator( uninitialize_gdextension_types );
+        init_obj.set_minimum_library_initialization_level( MODULE_INITIALIZATION_LEVEL_SCENE );
 
         return init_obj.init();
     }

@@ -3,10 +3,12 @@
 
 #include <godot_cpp/classes/sprite2d.hpp>
 
-namespace godot {
+namespace godot
+{
 
-    class GDExample : public Sprite2D {
-        GDCLASS(GDExample, Sprite2D)
+    class GDExample : public Sprite2D
+    {
+        GDCLASS( GDExample, Sprite2D )
 
     private:
         double time_passed;
@@ -14,14 +16,14 @@ namespace godot {
 
     protected:
         static void _bind_methods();
-        void set_amplitude(const double p_amplitude);
+        void set_amplitude( const double p_amplitude );
         double get_amplitude() const;
 
     public:
         GDExample();
         ~GDExample();
 
-        void _process(double delta) override;
+        void _process( double delta ) override;
     };
 
 }

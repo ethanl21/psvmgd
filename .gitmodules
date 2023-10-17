@@ -3,5 +3,6 @@
 	url = https://github.com/godotengine/godot-cpp.git
 [submodule "extern/psvm"]
 	path = extern/psvm
-	url = https://github.com/ethanl21/psvm
-	ignore = all
+	url = https://github.com/ethanl21/psvm.git
+	branch = main
+	ignore = dirty

@@ -4,6 +4,7 @@
   <component name="CidrRootsConfiguration">
     <libraryRoots>
       <file path="$PROJECT_DIR$/extern/godot-cpp" />
+      <file path="$PROJECT_DIR$/extern/psvm" />
     </libraryRoots>
   </component>
 </project>

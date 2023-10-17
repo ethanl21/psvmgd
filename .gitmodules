@@ -4,3 +4,4 @@
 [submodule "extern/psvm"]
 	path = extern/psvm
 	url = https://github.com/ethanl21/psvm
+	ignore = all

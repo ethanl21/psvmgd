@@ -35,7 +35,9 @@ project( psvmgd
 )
 
 # Create our library
-add_library( ${PROJECT_NAME} SHARED )
+add_library( ${PROJECT_NAME} SHARED
+        src/ShowdownService.cpp
+        src/ShowdownService.h)
 
 target_compile_features( ${PROJECT_NAME}
     PRIVATE
@@ -122,7 +124,14 @@ set_target_properties( godot-cpp
         CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
 )
 
+add_subdirectory( extern/psvm )
+
+set_target_properties( psvm
+        PROPERTIES
+        CXX_VISIBILITY_PRESET hidden    # visibility needs to be the same as the main library
+)
 target_link_libraries( ${PROJECT_NAME}
     PRIVATE
         godot-cpp
+        psvm
 )

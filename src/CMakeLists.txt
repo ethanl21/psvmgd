@@ -4,6 +4,8 @@ target_sources(${PROJECT_NAME}
         PRIVATE
         GDExample.h
         GDExample.cpp
+        ShowdownService.h
+        ShowdownService.cpp
         GDExtensionTemplate.h
         GDExtensionTemplate.cpp
         RegisterExtension.cpp

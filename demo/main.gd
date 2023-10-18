@@ -22,6 +22,7 @@ var _input_label_settings: LabelSettings
 @onready var messages_scroll_container := $Control/MarginContainer/MainVBox/ScrollContainer
 @onready var input_line_edit := $Control/MarginContainer/MainVBox/InputHBox/LineEdit
 
+
 # Auto-scroll to the bottom of the container when adding a new line
 func _handle_scroll_changed():
 	messages_scroll_container.scroll_vertical = (
@@ -32,31 +33,31 @@ func _handle_scroll_changed():
 func _ready():
 	# Auto-scroll
 	messages_scroll_container.get_v_scroll_bar().connect("changed", _handle_scroll_changed)
-	
+
 	# Init label style settings
 	_output_label_settings = LabelSettings.new()
 	_output_label_settings.font_size = 18
-	
+
 	_input_label_settings = LabelSettings.new()
 	_input_label_settings.font_size = 18
 	_input_label_settings.font_color = Color.DIM_GRAY
-	
+
 	# Create a new battle
 	battle_id = ShowdownService.create_battle()
-	
+
 	# Register the output callback
 	ShowdownService.register_callback(battle_id, _append_message)
-	
+
 	# Insert lines to start a Gen IX battle
 	for line in data:
 		ShowdownService.write_message(battle_id, line)
 
 
 func _on_input_submit(message: String):
-	if message[0] == ">": # inputs should always start with >
-		ShowdownService.write_message(battle_id, message)
-
 	_append_message(message, false)
+
+	if message[0] == ">":  # inputs should always start with >
+		ShowdownService.write_message(battle_id, message)
 
 
 func _append_message(message: String, is_output = true):

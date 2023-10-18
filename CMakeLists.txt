@@ -104,7 +104,7 @@ include( ccache )
 
 # Formatting
 # Adds a custom target to format all the code at once
-include( ClangFormat )
+# include( ClangFormat )
 
 # godot-cpp
 # From here: https://github.com/godotengine/godot-cpp

@@ -1,5 +1,5 @@
 #pragma once
-// SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: GPL-3.0-only
 
 #include "godot_cpp/classes/object.hpp"
 

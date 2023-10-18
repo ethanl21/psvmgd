@@ -1,12 +1,10 @@
-// Copied from godot-cpp/test/src and modified.
-
 #include "gdextension_interface.h"
 
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/core/defs.hpp"
 #include "godot_cpp/godot.hpp"
 
-#include "GDExample.h"
+#include "BattleSimulator.h"
 #include "GDExtensionTemplate.h"
 
 using namespace godot;
@@ -25,10 +23,8 @@ void initialize_gdextension_types( ModuleInitializationLevel p_level )
     {
         return;
     }
-    // ClassDB::register_class<YourClass>();
-    ClassDB::register_class<GDExample>();
-
-    godot::ClassDB::register_class<GDExtensionTemplate>();
+    ClassDB::register_class<BattleSimulator>();
+    ClassDB::register_class<GDExtensionTemplate>();
 }
 
 /// @brief Called by Godot to let us do any cleanup.

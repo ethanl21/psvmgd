@@ -36,8 +36,8 @@ project( psvmgd
 
 # Create our library
 add_library( ${PROJECT_NAME} SHARED
-        src/ShowdownService.cpp
-        src/ShowdownService.h)
+        src/BattleSimulator.cpp
+        src/BattleSimulator.h)
 
 target_compile_features( ${PROJECT_NAME}
     PRIVATE

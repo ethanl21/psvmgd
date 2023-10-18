@@ -1,11 +1,9 @@
-# SPDX-License-Identifier: Unlicense
+# SPDX-License-Identifier: GPL-3.0-only
 
 target_sources(${PROJECT_NAME}
         PRIVATE
-        GDExample.h
-        GDExample.cpp
-        ShowdownService.h
-        ShowdownService.cpp
+        BattleSimulator.h
+        BattleSimulator.cpp
         GDExtensionTemplate.h
         GDExtensionTemplate.cpp
         RegisterExtension.cpp

@@ -1,10 +1,11 @@
 name: Main
 
 on:
-  push:
-    paths-ignore:
-      - '.gitignore'
-      - '*.md'
+  workflow_dispatch:
+#  push:
+#    paths-ignore:
+#      - '.gitignore'
+#      - '*.md'
 
 jobs:
   lint:

@@ -20,7 +20,7 @@ if ( CLANG_FORMAT_PROGRAM )
     list( FILTER CLANG_FORMAT_SOURCES EXCLUDE REGEX ".*/*.gdextension.in" )
     list( FILTER CLANG_FORMAT_SOURCES EXCLUDE REGEX ".*/Version.h.in" )
 
-    add_custom_target( clang-format
+    add_custom_target( psvmgd-clang-format
         COMMAND "${CLANG_FORMAT_PROGRAM}" --style=file -i ${CLANG_FORMAT_SOURCES}
         COMMENT "Running clang-format..."
         COMMAND_EXPAND_LISTS

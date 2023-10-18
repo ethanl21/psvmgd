@@ -27,14 +27,22 @@ for line in sim_input:
     ShowdownService.write_message(battle_id, line)
 ```
 
-## Build & Install
+A demo project is provided. To use it:
 
-To build psvmgd locally on your machine, you will need the following:
+1. Compile the project with CMake (see below)
+2. Copy the `lib` directory and the `psvmgd.gdextension` file from the output of the previous step to
+   the `demo/addons/psvmgd` directory of this repository.
+3. Open `demo/project.godot` using the Godot Engine editor.
+
+## Build
+
+To build psvmgd, you will need the following:
 
 - **[CMake](https://cmake.org/)** v3.22+
 - C++ Compiler with at least **C++17** support (any recent compiler)
-- (optional) **[ccache](https://ccache.dev/)** for faster rebuilds
-- (optional) **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)** for linting and automatic code formatting
+  - For Windows builds, MSVC is required
+- [Node.js](https://nodejs.org/en), (build-time dependency, not required at runtime)
+- (optional) **[ccache](https://ccache.dev/)**
 
 ### Not MSVC
 

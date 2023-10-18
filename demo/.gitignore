@@ -1,0 +1,4 @@
+# Godot 4+ specific ignores
+.godot/
+addons/psvmgd/lib
+addons/psvmgd/psvmgd.gdextension

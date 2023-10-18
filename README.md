@@ -60,6 +60,9 @@ $ cmake --build psvmgd-build --config Release
 $ cmake --install psvmgd-build
 ```
 
+## Bugs
+- Build fails on Windows x64 (Release). This is an error with quickjs.
+
 ## Attribution
 
 psvmgd is distributed under the GPL-3.0-only license. It is based

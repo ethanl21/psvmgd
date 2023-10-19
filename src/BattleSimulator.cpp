@@ -12,6 +12,8 @@ void BattleSimulator::_bind_methods()
     ClassDB::bind_method( D_METHOD( "write_message", "p_id", "p_message" ),
                           &BattleSimulator::write_message );
     ClassDB::bind_method( D_METHOD( "create_battle" ), &BattleSimulator::create_battle );
+    ClassDB::bind_method( D_METHOD("delete_battle", "p_id"), &BattleSimulator::delete_battle);
+    ClassDB::bind_method( D_METHOD("delete_all_battles"), &BattleSimulator::delete_all_battles);
 
     ADD_SIGNAL( MethodInfo( "simulator_response", PropertyInfo( Variant::STRING, "id" ),
                             PropertyInfo( Variant::STRING, "message" ) ) );
@@ -29,6 +31,7 @@ BattleSimulator::BattleSimulator() : simulator( new ShowdownService() )
 
 BattleSimulator::~BattleSimulator()
 {
+    this->simulator->DeleteAllBattles();
 }
 
 /**
@@ -39,6 +42,25 @@ String BattleSimulator::create_battle()
 {
     auto uuid = this->simulator->CreateBattle();
     return { uuid.c_str() };
+}
+
+/**
+ * @brief Deletes a battle by UUID, if it exists
+ * @param p_id UUID of the battle to delete
+ */
+void BattleSimulator::delete_battle( const String &p_id )
+{
+    std::string id( p_id.utf8().get_data() );
+
+    this->simulator->DeleteBattle(id);
+}
+
+/**
+ * @brief Deletes all the currently active battles
+ */
+void BattleSimulator::delete_all_battles()
+{
+    this->simulator->DeleteAllBattles();
 }
 
 /**

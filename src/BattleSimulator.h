@@ -21,6 +21,8 @@ namespace godot
         static void _bind_methods();
         void write_message( const String &p_id, const String &p_message );
         String create_battle();
+        void delete_battle( const String &p_id );
+        void delete_all_battles();
 
     public:
         BattleSimulator();

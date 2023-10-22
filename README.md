@@ -65,10 +65,10 @@ $ cmake --install psvmgd-build
 
 ## Attribution
 
-psvmgd is distributed under the GPL-3.0-only license. It is based
+psvmgd is distributed under the MIT license. It is based
 on [GDExtensionTemplate](https://github.com/asmaloney/GDExtensionTemplate) by asmaloney.
 
 psvmgd uses the following open-source libraries:
 
-- [ethanl21/psvm](https://github.com/ethanl21/psvm), which is licensed under the GPL-3.0-only license.
+- [ethanl21/psvm](https://github.com/ethanl21/psvm), which is licensed under the MIT license.
 - [godotengine/godot-cpp](https://github.com/godotengine/godot-cpp), which is licensed under the MIT license.

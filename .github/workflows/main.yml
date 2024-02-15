@@ -45,6 +45,10 @@ jobs:
       
       - name: Install Python Dependencies
         run: pip install meson ninja
+      
+      - name: Install Dependencies (Ubunti)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: apt-get install uuid-dev
 
       - name: Setup MSVC (Windows)
         if: matrix.config.os == 'windows-latest'
@@ -56,11 +60,16 @@ jobs:
           max-size: '10G'
           key: ${{ matrix.config.os }}-${{ matrix.build_type }}
 
-      - name: Configure
+      - name: Configure (Debug)
+        if: matrix.build_type == 'Debug'
         run: meson setup builddir
       
+      - name: Configure (Release)
+        if: matrix.build_type == 'Debug'
+        run: meson setup builddir -Dbuildtype=release
+      
       - name: Compile
-        run: meson compile -v -C builddir
+        run: meson compile -C builddir
 
       # - name: Upload artifact (Debug)
       #   if: matrix.build_type == 'Debug'

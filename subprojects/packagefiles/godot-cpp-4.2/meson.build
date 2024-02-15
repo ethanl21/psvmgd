@@ -1,14 +1,15 @@
 project('godot-cpp', 'cpp', version: '4.2',
   default_options: ['cpp_std=c++17'])
 
-# Alas, godot has a lot of these
-add_project_arguments([
-  '-Wno-unused-parameter',
-  '-Wno-extra-semi',
-  '-Wno-gnu-anonymous-struct',
-  '-Wno-nested-anon-types',
+if meson.get_compiler('cpp').id() != 'msvc'
+  add_project_arguments([
+    '-Wno-unused-parameter',
+    '-Wno-extra-semi',
+    '-Wno-gnu-anonymous-struct',
+    '-Wno-nested-anon-types',
 
-  ], language: 'cpp', )
+    ], language: 'cpp', )
+endif
 
 fs = import('fs')
 

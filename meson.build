@@ -29,8 +29,8 @@ version_h_cfg = configuration_data({
     'PROJECT_VERSION_MAJOR': semver[0],
     'PROJECT_VERSION_MINOR': semver[1],
     'PROJECT_VERSION_PATCH': semver[2],
-    'GIT_SHORT': run_command([git_exe, 'rev-parse', '--short', 'HEAD']).stdout(),
-    'GIT_SHA1': run_command([git_exe, 'rev-parse', 'HEAD']).stdout(),
+    'GIT_SHORT': run_command([git_exe, 'rev-parse', '--short', 'HEAD']).stdout().strip(),
+    'GIT_SHA1': run_command([git_exe, 'rev-parse', 'HEAD']).stdout().strip(),
 })
 version_h = configure_file(input: 'src/Version.h.in', output: 'Version.h', configuration: version_h_cfg)
 

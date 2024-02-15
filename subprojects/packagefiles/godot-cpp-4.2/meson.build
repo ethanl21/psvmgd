@@ -1,7 +1,7 @@
 project('godot-cpp', 'cpp', version: '4.2',
   default_options: ['cpp_std=c++17'])
 
-if meson.get_compiler('cpp').id() != 'msvc'
+if meson.get_compiler('cpp').get_id() != 'msvc'
   add_project_arguments([
     '-Wno-unused-parameter',
     '-Wno-extra-semi',

@@ -65,7 +65,7 @@ jobs:
         run: meson setup builddir
       
       - name: Configure (Release)
-        if: matrix.build_type == 'Debug'
+        if: matrix.build_type == 'Release'
         run: meson setup builddir -Dbuildtype=release
       
       - name: Compile

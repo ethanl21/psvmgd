@@ -1,0 +1,5 @@
+[wrap-git]
+url = https://github.com/ethanl21/psvm.git
+revision = head
+clone-recursive = true
+depth = 1

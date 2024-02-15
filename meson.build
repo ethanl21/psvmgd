@@ -1,0 +1,52 @@
+project('psvmgd', ['cpp', 'c'], version: '0.1', default_options: [
+    'cpp_std=c++17',
+    'b_lto=true'
+])
+
+# Build Universal binary on macOS
+if meson.is_subproject() == false
+    if build_machine.system() == 'darwin'
+        add_global_arguments(['-arch', 'x86_64', '-arch', 'arm64'], language: ['c', 'cpp', 'objcpp'])
+        add_global_link_arguments(['-arch', 'x86_64', '-arch', 'arm64'], language: ['c', 'cpp', 'objcpp'])
+    endif
+endif
+
+godot_dep = dependency('godot-cpp')
+
+python_exe = find_program('python3', 'python')
+
+# generate Version.h
+# version_h = custom_target('version_h_ct',
+#     output: ['Version.h'],
+#     command: [python_exe, meson.current_source_dir() + '/scripts/gen_version_h.py', meson.current_source_dir() + '/src/Version.h.in', meson.current_build_dir() + '/Version.h', meson.project_name(), meson.project_version()],
+# )
+
+git_exe = find_program('git')
+semver = meson.project_version().split('.') + ['0', '0', '0']
+version_h_cfg = configuration_data({
+    'UPPER_PROJECT_NAME': meson.project_name(),
+    'PROJECT_NAME': meson.project_name(),
+    'PROJECT_VERSION_MAJOR': semver[0],
+    'PROJECT_VERSION_MINOR': semver[1],
+    'PROJECT_VERSION_PATCH': semver[2],
+    'GIT_SHORT': run_command([git_exe, 'rev-parse', '--short', 'HEAD']).stdout(),
+    'GIT_SHA1': run_command([git_exe, 'rev-parse', 'HEAD']).stdout(),
+})
+version_h = configure_file(input: 'src/Version.h.in', output: 'Version.h', configuration: version_h_cfg)
+
+gdextension_cfg = configuration_data({
+    'PROJECT_NAME': meson.project_name(),
+    'MODE': get_option('buildtype')
+})
+gdextension = configure_file(input: 'templates/template.gdextension.in', output: meson.project_name() + '.gdextension', configuration: gdextension_cfg)
+
+
+# psvm dependency
+psvm_proj = subproject('psvm')
+psvm_dep = psvm_proj.get_variable('psvm_dep')
+
+psvmgd_src = files('src/BattleSimulator.cpp', 'src/RegisterExtension.cpp', 'src/GDExtensionTemplate.cpp')
+psvmgd_inc = include_directories('src')
+psvmgd_lib = shared_library('psvmgd', sources: [psvmgd_src, version_h], include_directories: psvmgd_inc, dependencies: [godot_dep, psvm_dep])
+
+

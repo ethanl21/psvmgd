@@ -13,14 +13,6 @@ endif
 
 godot_dep = dependency('godot-cpp')
 
-python_exe = find_program('python3', 'python')
-
-# generate Version.h
-# version_h = custom_target('version_h_ct',
-#     output: ['Version.h'],
-#     command: [python_exe, meson.current_source_dir() + '/scripts/gen_version_h.py', meson.current_source_dir() + '/src/Version.h.in', meson.current_build_dir() + '/Version.h', meson.project_name(), meson.project_version()],
-# )
-
 git_exe = find_program('git')
 semver = meson.project_version().split('.') + ['0', '0', '0']
 version_h_cfg = configuration_data({

@@ -963,13 +963,13 @@ if not fs.exists(generated_sources[0])
 endif
 
 godot_cpp_lib = static_library(
-  'libgodot-cpp',
+  'godot-cpp',
   files(core_sources) + generated_sources,
-  include_directories: includes
+  include_directories: include_directories(includes)
 )
 
 godot_cpp_dep = declare_dependency(
-  include_directories: includes,
+  include_directories: include_directories(includes),
   link_with: [godot_cpp_lib]
 )
 

@@ -9,6 +9,11 @@ if meson.get_compiler('cpp').get_id() != 'msvc'
     '-Wno-nested-anon-types',
 
     ], language: 'cpp', )
+else
+  add_project_arguments([
+    '/wd4224',
+    '/wd4305'
+  ], language: 'cpp')
 endif
 
 fs = import('fs')

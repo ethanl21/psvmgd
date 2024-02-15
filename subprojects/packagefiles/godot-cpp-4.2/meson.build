@@ -11,8 +11,9 @@ if meson.get_compiler('cpp').get_id() != 'msvc'
     ], language: 'cpp', )
 else
   add_project_arguments([
-    '/wd4224',
-    '/wd4305'
+    '/wd4244',
+    '/wd4305',
+    '/wd4146'
   ], language: 'cpp')
 endif
 
@@ -964,11 +965,11 @@ endif
 godot_cpp_lib = static_library(
   'libgodot-cpp',
   files(core_sources) + generated_sources,
-  include_directories: include_directories(includes)
+  include_directories: includes
 )
 
 godot_cpp_dep = declare_dependency(
-  include_directories: include_directories(includes),
+  include_directories: includes,
   link_with: [godot_cpp_lib]
 )
 

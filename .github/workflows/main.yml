@@ -108,11 +108,18 @@ jobs:
           echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")" >> "$GITHUB_OUTPUT"
           echo "$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")"
 
-
-      - name: Upload artifact
+      - name: Upload Shared Library Artifact
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
           name: ${{ github.event.repository.name }}
           path: |
             ${{ github.workspace }}/${{ steps.locate.outputs.LIB_PATH}}
+
+      - name: Upload .gdextension Artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ success() }} && matrix.config.name == 'linux-GCC' && matrix.build_type == 'Debug'
+        with:
+          name: ${{ github.event.repository.name }}
+          path: |
+            ${{ github.workspace }}/builddir/psvmgd.gdextension

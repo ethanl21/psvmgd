@@ -27,15 +27,6 @@ for line in sim_input:
     ShowdownService.write_message(battle_id, line)
 ```
 
-A demo project is provided. To use it:
-
-(outdated instructions, todo update)
-
-1. Compile the project with Meson (see below)
-2. Copy the `lib` directory and the `psvmgd.gdextension` file from the output of the previous step to
-   the `demo/addons/psvmgd` directory of this repository.
-3. Open `demo/project.godot` using the Godot Engine editor.
-
 ## Build
 
 To build psvmgd, you will need the following:
@@ -60,6 +51,14 @@ cd psvmgd
 meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir --buildtype debug # or release
 meson compile -C builddir
 ```
+
+## Package Addon
+
+1. Compile the project with Meson (see above)
+2. Copy the `psvmgd.gdextension` file from the output of the previous step to`addons/psvmgd`.
+3. Copy the shared library files to the corresponding directories in `addons/psvmgd/bin`
+
+To use the demo project, copy the `addon/psmvgd` folder to `demo/addons`.
 
 ## Attribution
 

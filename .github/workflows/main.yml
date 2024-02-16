@@ -136,7 +136,7 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}-Debug
           path: |
-            ${{ github.workspace }}/builddir/psvmgd.dll
+            ${{ github.workspace }}/builddir/libpsvmgd.dll
             ${{ github.workspace }}/builddir/psvmgd.gdextension
 
       - name: Upload artifact (Windows Release)
@@ -145,5 +145,5 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}-Release
           path: |
-            ${{ github.workspace }}/builddir/psvmgd.dll
+            ${{ github.workspace }}/builddir/libpsvmgd.dll
             ${{ github.workspace }}/builddir/psvmgd.gdextension

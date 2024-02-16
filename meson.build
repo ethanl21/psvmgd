@@ -39,6 +39,14 @@ psvm_dep = psvm_proj.get_variable('psvm_dep')
 
 psvmgd_src = files('src/BattleSimulator.cpp', 'src/RegisterExtension.cpp', 'src/GDExtensionTemplate.cpp')
 psvmgd_inc = include_directories('src')
-psvmgd_lib = shared_library('psvmgd', sources: [psvmgd_src, version_h], include_directories: psvmgd_inc, dependencies: [godot_dep, psvm_dep])
+
+# library file name
+if host_machine.system() == 'darwin'
+libname = '.'.join(['psvmgd', host_machine.system(), get_option('buildtype')])
+else
+libname = '.'.join(['psvmgd', host_machine.system(), host_machine.cpu_family(), get_option('buildtype')])
+endif
+
+psvmgd_lib = shared_library(libname, sources: [psvmgd_src, version_h], include_directories: psvmgd_inc, dependencies: [godot_dep, psvm_dep])
 
 

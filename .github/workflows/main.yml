@@ -26,9 +26,9 @@ jobs:
       matrix:
         build_type: ["Debug", "Release"]
         config:
-          - { name: "macOS-Clang", os: macos-latest }
-          - { name: "linux-GCC", os: ubuntu-latest }
-          - { name: "windows-MinGW", os: ubuntu-latest }
+          - { name: "macOS-Clang", os: macos-latest, lib_ext: dylib }
+          - { name: "linux-GCC", os: ubuntu-latest, lib_ext: so }
+          - { name: "windows-MinGW", os: ubuntu-latest, lib_ext: dll }
 
     name: 🛠 Build / ${{ matrix.config.name }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.config.os }}
@@ -69,23 +69,23 @@ jobs:
 
       - name: Configure (MinGW Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dgh_actions=$GITHUB_ACTIONS
         env:
           CCACHE_PREFIX: mingw32-
 
       - name: Configure (MinGW Release)
         if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release -Dgh_actions=$GITHUB_ACTIONS
         env:
           CCACHE_PREFIX: mingw32-
 
       - name: Configure (Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'
-        run: meson setup builddir
+        run: meson setup builddir -Dgh_actions=$GITHUB_ACTIONS
 
       - name: Configure (Release)
         if: matrix.build_type == 'Release' && matrix.config.name != 'windows-MinGW'
-        run: meson setup builddir -Dbuildtype=release
+        run: meson setup builddir -Dbuildtype=release -Dgh_actions=$GITHUB_ACTIONS
 
       # compile
 
@@ -94,56 +94,20 @@ jobs:
 
       # upload artifacts
 
+      - name: Find artifact
+        id: locate
+        run: |
+            echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.libext }}")" >> "$GITHUB_OUTPUT"
+
       - name: Upload artifact (Linux Debug)
-        if: matrix.build_type == 'Debug' && matrix.config.name == 'linux-GCC'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.event.repository.name }}-Debug
+          name: ${{ github.event.repository.name }}
           path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.so
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
-
-      - name: Upload artifact (Linux Release)
-        if: matrix.build_type == 'Release' && matrix.config.name == 'linux-GCC'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.repository.name }}-Release
-          path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.so
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
-
-      - name: Upload artifact (macOS Debug)
-        if: matrix.build_type == 'Debug' && matrix.config.name == 'macOS-Clang'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.repository.name }}-Debug
-          path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.dylib
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
-
-      - name: Upload artifact (macOS Release)
-        if: matrix.build_type == 'Release' && matrix.config.name == 'macOS-Clang'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.repository.name }}-Release
-          path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.dylib
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
-
-      - name: Upload artifact (Windows Debug)
-        if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.repository.name }}-Debug
-          path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.dll
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
-
-      - name: Upload artifact (Windows Release)
-        if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.event.repository.name }}-Release
-          path: |
-            ${{ github.workspace }}/builddir/libpsvmgd.dll
-            ${{ github.workspace }}/builddir/psvmgd.gdextension
+            ${{ github.workspace }}/${{ steps.locate.output.LIB_PATH}}
+  
+  addon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3

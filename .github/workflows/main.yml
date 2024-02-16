@@ -103,8 +103,11 @@ jobs:
 
       - name: Find artifact
         if: ${{ success() }}
+        id: locate
         run: |
           echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")" >> "$GITHUB_OUTPUT"
+          echo "$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")"
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -112,4 +115,4 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}
           path: |
-            ${{ github.workspace }}/${{ steps.locate.output.LIB_PATH}}
+            ${{ github.workspace }}/${{ steps.locate.outputs.LIB_PATH}}

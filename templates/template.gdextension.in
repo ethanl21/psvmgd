@@ -5,6 +5,9 @@ compatibility_minimum = 4.1
 
 [libraries]
 
-linux.@MODE@.x86_64 = "lib/Linux-x86_64/lib@PROJECT_NAME@.so"
-macos.@MODE@ = "lib/Darwin-universal/lib@PROJECT_NAME@.dylib"
-windows.@MODE@.x86_64 = "lib/Windows-AMD64/@PROJECT_NAME@.dll"
+linux.debug.x86_64 = "bin/Linux-x86_64/lib@PROJECT_NAME@.debug.so"
+linux.release.x86_64 = "bin/Linux-x86_64/lib@PROJECT_NAME@.release.so"
+macos.debug = "bin/Darwin-universal/lib@PROJECT_NAME@.debug.dylib"
+macos.release = "bin/Darwin-universal/lib@PROJECT_NAME@.release.dylib"
+windows.debug.x86_64 = "bin/Windows-x86_64/lib@PROJECT_NAME@.debug.dll"
+windows.release.x86_64 = "bin/Windows-x86_64/lib@PROJECT_NAME@.release.dll"

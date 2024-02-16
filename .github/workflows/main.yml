@@ -82,18 +82,18 @@ jobs:
       - name: Compile
         run: meson compile -C builddir
 
-      # - name: Upload artifact (Debug)
-      #   if: matrix.build_type == 'Debug'
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ github.event.repository.name }}-Debug
-      #     path: |
-      #       ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+      - name: Upload artifact (Debug)
+        if: matrix.build_type == 'Debug'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Debug
+          path: |
+            ${{ github.workspace }}/install-${{ matrix.build_type }}/*
 
-      # - name: Upload artifact (Release)
-      #   if: matrix.build_type == 'Release'
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ github.event.repository.name }}-Release
-      #     path: |
-      #       ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+      - name: Upload artifact (Release)
+        if: matrix.build_type == 'Release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Release
+          path: |
+            ${{ github.workspace }}/install-${{ matrix.build_type }}/*

@@ -6,7 +6,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   lint:
@@ -17,37 +17,38 @@ jobs:
       - name: Run clang-format style check
         uses: jidicula/clang-format-action@v4.9.0
         with:
-          clang-format-version: '15'
-          exclude-regex: 'subprojects'
+          clang-format-version: "15"
+          exclude-regex: "subprojects"
 
   build:
     strategy:
       fail-fast: false
       matrix:
-        build_type: ['Debug', 'Release']
+        build_type: ["Debug", "Release"]
         config:
-          - { name: 'macOS-Clang', os: macos-latest }
-          - { name: 'linux-GCC', os: ubuntu-latest }
-          - { name: 'windows-MinGW', os: ubuntu-latest }
+          - { name: "macOS-Clang", os: macos-latest }
+          - { name: "linux-GCC", os: ubuntu-latest }
+          - { name: "windows-MinGW", os: ubuntu-latest }
 
     name: 🛠 Build / ${{ matrix.config.name }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.config.os }}
 
     steps:
+      # setup
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
-      
+          python-version: "3.x"
+
       - name: Install Python Dependencies
         run: pip install meson ninja
-      
+
       - name: Install Dependencies (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
         run: sudo apt-get install uuid-dev wine64
@@ -61,44 +62,88 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          max-size: '10G'
+          max-size: "10G"
           key: ${{ matrix.config.name }}-${{ matrix.build_type }}
+
+      # configure
 
       - name: Configure (MinGW Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
         run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
         env:
           CCACHE_PREFIX: mingw32-
-      
+
       - name: Configure (MinGW Release)
         if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
         run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
         env:
           CCACHE_PREFIX: mingw32-
-      
+
       - name: Configure (Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'
         run: meson setup builddir
-      
+
       - name: Configure (Release)
         if: matrix.build_type == 'Release' && matrix.config.name != 'windows-MinGW'
         run: meson setup builddir -Dbuildtype=release
-      
+
+      # compile
+
       - name: Compile
         run: meson compile -C builddir
 
-      - name: Upload artifact (Debug)
-        if: matrix.build_type == 'Debug'
+      # upload artifacts
+
+      - name: Upload artifact (Linux Debug)
+        if: matrix.build_type == 'Debug' && matrix.config.name == 'linux-GCC'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}-Debug
           path: |
-            ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+            ${{ github.workspace }}/builddir/libpsvmgd.so
+            ${{ github.workspace }}/builddir/psvmgd.gdextension
 
-      - name: Upload artifact (Release)
-        if: matrix.build_type == 'Release'
+      - name: Upload artifact (Linux Release)
+        if: matrix.build_type == 'Release' && matrix.config.name == 'linux-GCC'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}-Release
           path: |
-            ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+            ${{ github.workspace }}/builddir/libpsvmgd.so
+            ${{ github.workspace }}/builddir/psvmgd.gdextension
+
+      - name: Upload artifact (macOS Debug)
+        if: matrix.build_type == 'Debug' && matrix.config.name == 'macOS-Clang'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Debug
+          path: |
+            ${{ github.workspace }}/builddir/libpsvmgd.dylib
+            ${{ github.workspace }}/builddir/psvmgd.gdextension
+
+      - name: Upload artifact (macOS Release)
+        if: matrix.build_type == 'Release' && matrix.config.name == 'macOS-Clang'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Release
+          path: |
+            ${{ github.workspace }}/builddir/libpsvmgd.dylib
+            ${{ github.workspace }}/builddir/psvmgd.gdextension
+
+      - name: Upload artifact (Windows Debug)
+        if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Debug
+          path: |
+            ${{ github.workspace }}/builddir/psvmgd.dll
+            ${{ github.workspace }}/builddir/psvmgd.gdextension
+
+      - name: Upload artifact (Windows Release)
+        if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-Release
+          path: |
+            ${{ github.workspace }}/builddir/psvmgd.dll
+            ${{ github.workspace }}/builddir/psvmgd.gdextension

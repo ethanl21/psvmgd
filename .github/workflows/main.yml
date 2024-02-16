@@ -51,7 +51,7 @@ jobs:
 
       - name: Install Dependencies (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
-        run: sudo apt-get install uuid-dev wine64
+        run: sudo apt update && sudo apt install uuid-dev wine64
 
       - name: Setup MinGW
         if: matrix.config.name == 'windows-MinGW'
@@ -69,45 +69,47 @@ jobs:
 
       - name: Configure (MinGW Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dgh_actions=$GITHUB_ACTIONS
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
         env:
           CCACHE_PREFIX: mingw32-
 
       - name: Configure (MinGW Release)
         if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release -Dgh_actions=$GITHUB_ACTIONS
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
         env:
           CCACHE_PREFIX: mingw32-
 
       - name: Configure (Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'
-        run: meson setup builddir -Dgh_actions=$GITHUB_ACTIONS
+        run: meson setup builddir
 
       - name: Configure (Release)
         if: matrix.build_type == 'Release' && matrix.config.name != 'windows-MinGW'
-        run: meson setup builddir -Dbuildtype=release -Dgh_actions=$GITHUB_ACTIONS
+        run: meson setup builddir -Dbuildtype=release
 
       # compile
 
       - name: Compile
+        if: matrix.config.name != 'windows-MinGW'
         run: meson compile -C builddir
+
+      - name: Compile (MinGW)
+        if: matrix.config.name == 'windows-MinGW'
+        run: meson compile -C builddir
+        env:
+          CCACHE_PREFIX: mingw32-
 
       # upload artifacts
 
       - name: Find artifact
-        id: locate
+        if: ${{ success() }}
         run: |
-            echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.libext }}")" >> "$GITHUB_OUTPUT"
+          echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")" >> "$GITHUB_OUTPUT"
 
-      - name: Upload artifact (Linux Debug)
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
+        if: ${{ success() }}
         with:
           name: ${{ github.event.repository.name }}
           path: |
             ${{ github.workspace }}/${{ steps.locate.output.LIB_PATH}}
-  
-  addon:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3

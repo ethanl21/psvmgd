@@ -1,5 +1,0 @@
-option('gh_actions',
-  type: 'boolean',
-  value: false,
-  description: 'Is running on a GitHub Actions runner'
-)

@@ -66,10 +66,14 @@ jobs:
       - name: Configure (MinGW Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
         run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
+        env:
+          CCACHE_PREFIX: mingw32-
       
       - name: Configure (MinGW Release)
         if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
         run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
+        env:
+          CCACHE_PREFIX: mingw32-
       
       - name: Configure (Debug)
         if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'

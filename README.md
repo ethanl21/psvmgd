@@ -27,46 +27,42 @@ for line in sim_input:
     ShowdownService.write_message(battle_id, line)
 ```
 
-A demo project is provided. To use it:
-
-1. Compile the project with CMake (see below)
-2. Copy the `lib` directory and the `psvmgd.gdextension` file from the output of the previous step to
-   the `demo/addons/psvmgd` directory of this repository.
-3. Open `demo/project.godot` using the Godot Engine editor.
-
 ## Build
 
 To build psvmgd, you will need the following:
 
 - **[CMake](https://cmake.org/)** v3.22+
 - C++ Compiler with at least **C++17** support (any recent compiler)
-  - For Windows builds, MSVC is required
+  - For Windows builds, use MinGW to cross-compile on a Linux host.
 - [Node.js](https://nodejs.org/en), (build-time dependency, not required at runtime)
-- (optional) **[ccache](https://ccache.dev/)**
 
-### Not MSVC
-
-```sh
-$ cmake -B psvmgd-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=psvmgd-install psvmgd
-$ cmake --build psvmgd-build --parallel
-$ cmake --install psvmgd-build
+```bash
+git clone https://github.com/ethanl21/psvmgd.git
+cd psvmgd
+meson setup builddir --buildtype debug # or release
+meson compile -C builddir
 ```
 
-### MSVC
+#### For Windows
 
-```sh
-$ cmake -B psvmgd-build -G"Visual Studio 17 2022"  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=psvmgd-install psvmgd
-$ cmake --build psvmgd-build --config Release
-$ cmake --install psvmgd-build
+```bash
+git clone https://github.com/ethanl21/psvmgd.git
+cd psvmgd
+meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir --buildtype debug # or release
+meson compile -C builddir
 ```
 
-## Bugs
-- Build fails on Windows x64 (Release). This is an error with quickjs.
+## Package Addon
+
+1. Compile the project with Meson (see above)
+2. Copy the `psvmgd.gdextension` file from the output of the previous step to`addons/psvmgd`.
+3. Copy the shared library files to the corresponding directories in `addons/psvmgd/bin`
+
+To use the demo project, copy the `addon/psmvgd` folder to `demo/addons`.
 
 ## Attribution
 
-psvmgd is distributed under the MIT license. It is based
-on [GDExtensionTemplate](https://github.com/asmaloney/GDExtensionTemplate) by asmaloney.
+psvmgd is distributed under the MIT license.
 
 psvmgd uses the following open-source libraries:
 

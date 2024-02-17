@@ -12,8 +12,8 @@ void BattleSimulator::_bind_methods()
     ClassDB::bind_method( D_METHOD( "write_message", "p_id", "p_message" ),
                           &BattleSimulator::write_message );
     ClassDB::bind_method( D_METHOD( "create_battle" ), &BattleSimulator::create_battle );
-    ClassDB::bind_method( D_METHOD("delete_battle", "p_id"), &BattleSimulator::delete_battle);
-    ClassDB::bind_method( D_METHOD("delete_all_battles"), &BattleSimulator::delete_all_battles);
+    ClassDB::bind_method( D_METHOD( "delete_battle", "p_id" ), &BattleSimulator::delete_battle );
+    ClassDB::bind_method( D_METHOD( "delete_all_battles" ), &BattleSimulator::delete_all_battles );
 
     ADD_SIGNAL( MethodInfo( "simulator_response", PropertyInfo( Variant::STRING, "id" ),
                             PropertyInfo( Variant::STRING, "message" ) ) );
@@ -52,7 +52,7 @@ void BattleSimulator::delete_battle( const String &p_id )
 {
     std::string id( p_id.utf8().get_data() );
 
-    this->simulator->DeleteBattle(id);
+    this->simulator->DeleteBattle( id );
 }
 
 /**

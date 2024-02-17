@@ -1,0 +1,6 @@
+*
+!.gitignore
+!packagefiles/**
+!packagefiles/
+!godot-cpp.wrap
+!psvm.wrap

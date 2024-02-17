@@ -1,97 +1,126 @@
-name: Main
+name: Build
 
 on:
-  workflow_dispatch:
-#  push:
-#    paths-ignore:
-#      - '.gitignore'
-#      - '*.md'
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+    paths-ignore:
+      - "*.md"
 
 jobs:
   lint:
     name: 🧹 Lint / 📜 C++
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run clang-format style check
         uses: jidicula/clang-format-action@v4.9.0
         with:
-          clang-format-version: '15'
-          exclude-regex: 'extern'
+          clang-format-version: "15"
+          exclude-regex: "subprojects"
 
   build:
     strategy:
       fail-fast: false
       matrix:
-        build_type: ['Debug', 'Release']
+        build_type: ["Debug", "Release"]
         config:
-          - { name: '🍏 macOS Clang', os: macos-latest }
-          - { name: '🐧 Linux GCC', os: ubuntu-latest }
-          - { name: '🪟 Windows MSVC', os: windows-latest }
+          - { name: "macOS-Clang", os: macos-latest, lib_ext: dylib }
+          - { name: "linux-GCC", os: ubuntu-latest, lib_ext: so }
+          - { name: "windows-MinGW", os: ubuntu-latest, lib_ext: dll }
 
     name: 🛠 Build / ${{ matrix.config.name }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.config.os }}
 
     steps:
+      # setup
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          submodules: recursive
+          python-version: "3.x"
 
-      - name: Install Dependencies (macOS)
-        if: matrix.config.os == 'macos-latest'
-        run: brew install ccache ninja
+      - name: Install Python Dependencies
+        run: pip install meson ninja
 
-      - name: Install Dependencies (Linux)
+      - name: Install Dependencies (Ubuntu)
         if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ccache ninja-build
+        run: sudo apt update && sudo apt install uuid-dev wine64
 
-      - name: Install Dependencies (Windows)
-        if: matrix.config.os == 'windows-latest'
-        run: |
-          choco upgrade ccache ninja
-
-      - name: Setup MSVC (Windows)
-        if: matrix.config.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup MinGW
+        if: matrix.config.name == 'windows-MinGW'
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x64
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          max-size: '10G'
-          key: ${{ matrix.config.os }}-${{ matrix.build_type }}
+          max-size: "10G"
+          key: ${{ matrix.config.name }}-${{ matrix.build_type }}
 
-      - name: Configure
-        run: >
-          mkdir GDExtension-build
+      # configure
 
-          cmake
-          -B GDExtension-build
-          -G "Ninja"
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          --install-prefix ${{ github.workspace }}/install-${{ matrix.build_type }}
-          .
+      - name: Configure (MinGW Debug)
+        if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
+        env:
+          CCACHE_PREFIX: mingw32-
 
-      - name: Build
-        run: cmake --build GDExtension-build
+      - name: Configure (MinGW Release)
+        if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
+        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
+        env:
+          CCACHE_PREFIX: mingw32-
 
-      - name: Install
-        run: cmake --install GDExtension-build
+      - name: Configure (Debug)
+        if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'
+        run: meson setup builddir
 
-      - name: Upload artifact (Debug)
-        if: matrix.build_type == 'Debug'
-        uses: actions/upload-artifact@v3
+      - name: Configure (Release)
+        if: matrix.build_type == 'Release' && matrix.config.name != 'windows-MinGW'
+        run: meson setup builddir -Dbuildtype=release
+
+      # compile
+
+      - name: Compile
+        if: matrix.config.name != 'windows-MinGW'
+        run: meson compile -C builddir
+
+      - name: Compile (MinGW)
+        if: matrix.config.name == 'windows-MinGW'
+        run: meson compile -C builddir
+        env:
+          CCACHE_PREFIX: mingw32-
+
+      # upload artifacts
+
+      - name: Find artifact
+        if: ${{ success() }}
+        id: locate
+        run: |
+          echo "LIB_PATH=$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")" >> "$GITHUB_OUTPUT"
+          echo "$(find builddir -type f -name "*.${{ matrix.config.lib_ext }}")"
+
+      - name: Upload Shared Library Artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ success() }}
         with:
-          name: ${{ github.event.repository.name }}-Debug
+          name: ${{ github.event.repository.name }}-${{matrix.config.name}}-${{matrix.build_type}}
           path: |
-            ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+            ${{ github.workspace }}/${{ steps.locate.outputs.LIB_PATH}}
 
-      - name: Upload artifact (Release)
-        if: matrix.build_type == 'Release'
-        uses: actions/upload-artifact@v3
+      - name: Upload .gdextension Artifact
+        uses: actions/upload-artifact@v4
+        if: success() && matrix.config.name == 'linux-GCC' && matrix.build_type == 'Debug'
         with:
-          name: ${{ github.event.repository.name }}-Release
+          name: gdextension
           path: |
-            ${{ github.workspace }}/install-${{ matrix.build_type }}/*
+            ${{ github.workspace }}/builddir/psvmgd.gdextension

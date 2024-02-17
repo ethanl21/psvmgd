@@ -1,0 +1,13 @@
+[configuration]
+
+entry_symbol = "GDExtensionInit"
+compatibility_minimum = 4.1
+
+[libraries]
+
+linux.debug.x86_64 = "bin/Linux-x86_64/lib@PROJECT_NAME@.debug.so"
+linux.release.x86_64 = "bin/Linux-x86_64/lib@PROJECT_NAME@.release.so"
+macos.debug = "bin/Darwin-universal/lib@PROJECT_NAME@.debug.dylib"
+macos.release = "bin/Darwin-universal/lib@PROJECT_NAME@.release.dylib"
+windows.debug.x86_64 = "bin/Windows-x86_64/lib@PROJECT_NAME@.debug.dll"
+windows.release.x86_64 = "bin/Windows-x86_64/lib@PROJECT_NAME@.release.dll"

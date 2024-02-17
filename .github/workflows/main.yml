@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -111,13 +112,13 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: ${{ github.event.repository.name }}-${{matrix.config.name}}-${{matrix.build_type}}
+          name: ${{ github.event.repository.name }}_${{matrix.config.name}}_${{matrix.build_type}}
           path: |
             ${{ github.workspace }}/${{ steps.locate.outputs.LIB_PATH}}
 
       - name: Upload .gdextension Artifact
         uses: actions/upload-artifact@v4
-        if: success() && matrix.config.name == 'linux-GCC' && matrix.build_type == 'Debug'
+        if: ${{ matrix.config.name == 'linux-GCC' && matrix.build_type == 'Debug' && success() }}
         with:
           name: gdextension
           path: |

@@ -15,12 +15,12 @@ namespace godot
         GDCLASS( BattleSimulator, RefCounted )
 
     private:
-        std::unique_ptr<ShowdownService> simulator;
+        std::unique_ptr<psvm::ShowdownService> simulator;
 
     protected:
         static void _bind_methods();
         void write_message( const String &p_id, const String &p_message );
-        String create_battle();
+        void create_battle( const String &p_id);
         void delete_battle( const String &p_id );
         void delete_all_battles();
 

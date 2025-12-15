@@ -16,8 +16,8 @@ func _on_response(id: String, msg: String):
 		callback_fns[id].call(msg)
 
 
-func create_battle() -> String:
-	return sim.create_battle()
+func create_battle(id: String):
+	sim.create_battle(id)
 
 
 func register_callback(id: String, cb: Callable):

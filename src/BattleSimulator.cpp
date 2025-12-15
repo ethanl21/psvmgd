@@ -19,29 +19,30 @@ void BattleSimulator::_bind_methods()
                             PropertyInfo( Variant::STRING, "message" ) ) );
 }
 
-BattleSimulator::BattleSimulator() : simulator( new ShowdownService() )
+BattleSimulator::BattleSimulator() : simulator( new psvm::ShowdownService() )
 {
     std::function<void( std::string, std::string )> callback = [this]( const std::string &id,
                                                                        const std::string &msg ) {
         emit_signal( "simulator_response", String( id.c_str() ), String( msg.c_str() ) );
     };
 
-    this->simulator->setSimulatorOnResponseCallback( callback );
+    this->simulator->setCallback( callback );
 }
 
 BattleSimulator::~BattleSimulator()
 {
-    this->simulator->DeleteAllBattles();
+    this->simulator->killAllBattles();
 }
 
 /**
  * @brief Creates a new battle
  * @return UUID that represents the new battle
  */
-String BattleSimulator::create_battle()
+void BattleSimulator::create_battle(const String &p_id)
 {
-    auto uuid = this->simulator->CreateBattle();
-    return { uuid.c_str() };
+    std::string id( p_id.utf8().get_data() );
+
+    this->simulator->startBattle(id);
 }
 
 /**
@@ -52,7 +53,7 @@ void BattleSimulator::delete_battle( const String &p_id )
 {
     std::string id( p_id.utf8().get_data() );
 
-    this->simulator->DeleteBattle( id );
+    this->simulator->killBattle( id );
 }
 
 /**
@@ -60,7 +61,7 @@ void BattleSimulator::delete_battle( const String &p_id )
  */
 void BattleSimulator::delete_all_battles()
 {
-    this->simulator->DeleteAllBattles();
+    this->simulator->killAllBattles();
 }
 
 /**
@@ -73,5 +74,5 @@ void BattleSimulator::write_message( const String &p_id, const String &p_message
     std::string id( p_id.utf8().get_data() );
     std::string msg( p_message.utf8().get_data() );
 
-    this->simulator->WriteMessage( id, msg );
+    this->simulator->writeToBattle( id, msg );
 }

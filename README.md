@@ -16,7 +16,8 @@ func on_sim_output(message: String):
     print(message)
 
 # Create a new battle
-var battle_id := ShowdownService.create_battle()
+var battle_id := "test_battle"
+ShowdownService.create_battle(battle_id)
 
 # Register an output callback function
 ShowdownService.register_callback(battle_id, on_sim_output)
@@ -31,24 +32,14 @@ for line in sim_input:
 
 To build psvmgd, you will need the following:
 
-- **[CMake](https://cmake.org/)** v3.22+
+- **[Meson](https://mesonbuild.com/)**
 - C++ Compiler with at least **C++17** support (any recent compiler)
-  - For Windows builds, use MinGW to cross-compile on a Linux host.
 - [Node.js](https://nodejs.org/en), (build-time dependency, not required at runtime)
 
 ```bash
 git clone https://github.com/ethanl21/psvmgd.git
 cd psvmgd
 meson setup builddir --buildtype debug # or release
-meson compile -C builddir
-```
-
-#### For Windows
-
-```bash
-git clone https://github.com/ethanl21/psvmgd.git
-cd psvmgd
-meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir --buildtype debug # or release
 meson compile -C builddir
 ```
 

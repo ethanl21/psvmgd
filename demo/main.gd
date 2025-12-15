@@ -43,7 +43,8 @@ func _ready():
 	_input_label_settings.font_color = Color.DIM_GRAY
 
 	# Create a new battle
-	battle_id = ShowdownService.create_battle()
+	battle_id = "test_battle"
+	ShowdownService.create_battle(battle_id)
 
 	# Register the output callback
 	ShowdownService.register_callback(battle_id, _append_message)

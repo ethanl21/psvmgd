@@ -1,0 +1,13 @@
+[configuration]
+
+entry_symbol = "GDExtensionInit"
+compatibility_minimum = 4.1
+
+[libraries]
+
+linux.debug.x86_64 = "bin/Linux-x86_64/libpsvmgd.debug.so"
+linux.release.x86_64 = "bin/Linux-x86_64/libpsvmgd.release.so"
+macos.debug = "bin/Darwin-universal/libpsvmgd.darwin.debug.dylib"
+macos.release = "bin/Darwin-universal/libpsvmgd.darwin.release.dylib"
+windows.debug.x86_64 = "bin/Windows-x86_64/libpsvmgd.debug.dll"
+windows.release.x86_64 = "bin/Windows-x86_64/libpsvmgd.release.dll"

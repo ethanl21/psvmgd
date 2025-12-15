@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-12-15
+
+## Changed
+
+- Update to psvm@3.0.0
+- Use `godot-cpp` from WrapDB
+- Update demo project to Godot 4.5
+- `ShowdownSimulator::createBattle` no accepts id parameter and no longer returns id
+
 ## [1.0.0] - 2024-02-16
 
 ### Added

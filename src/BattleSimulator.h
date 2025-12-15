@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-only
-
 #ifndef PSVMGD_BATTLESIMULATOR_H
 #define PSVMGD_BATTLESIMULATOR_H
 

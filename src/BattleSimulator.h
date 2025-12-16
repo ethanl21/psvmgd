@@ -18,7 +18,7 @@ namespace godot
     protected:
         static void _bind_methods();
         void write_message( const String &p_id, const String &p_message );
-        void create_battle( const String &p_id);
+        void create_battle( const String &p_id );
         void delete_battle( const String &p_id );
         void delete_all_battles();
 

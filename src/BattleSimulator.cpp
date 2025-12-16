@@ -36,11 +36,11 @@ BattleSimulator::~BattleSimulator()
  * @brief Creates a new battle
  * @return UUID that represents the new battle
  */
-void BattleSimulator::create_battle(const String &p_id)
+void BattleSimulator::create_battle( const String &p_id )
 {
     std::string id( p_id.utf8().get_data() );
 
-    this->simulator->startBattle(id);
+    this->simulator->startBattle( id );
 }
 
 /**

@@ -2,8 +2,6 @@ name: Build
 
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
     paths-ignore:
@@ -29,7 +27,7 @@ jobs:
         config:
           - { name: "macOS-Clang", os: macos-latest, lib_ext: dylib }
           - { name: "linux-GCC", os: ubuntu-latest, lib_ext: so }
-          - { name: "windows-MinGW", os: ubuntu-latest, lib_ext: dll }
+          - { name: "windows-MSVC", os: windows-latest, lib_ext: dll }
 
     name: 🛠 Build / ${{ matrix.config.name }} (${{ matrix.build_type }})
     runs-on: ${{ matrix.config.os }}
@@ -50,15 +48,9 @@ jobs:
       - name: Install Python Dependencies
         run: pip install meson ninja
 
-      - name: Install Dependencies (Ubuntu)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install uuid-dev wine64
-
-      - name: Setup MinGW
-        if: matrix.config.name == 'windows-MinGW'
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
+      - name: Set up MSVC (Windows)
+        if: matrix.config.name == 'windows-MSVC'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -67,38 +59,19 @@ jobs:
           key: ${{ matrix.config.name }}-${{ matrix.build_type }}
 
       # configure
-
-      - name: Configure (MinGW Debug)
-        if: matrix.build_type == 'Debug' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir
-        env:
-          CCACHE_PREFIX: mingw32-
-
-      - name: Configure (MinGW Release)
-        if: matrix.build_type == 'Release' && matrix.config.name == 'windows-MinGW'
-        run: meson setup --cross-file cross/x86_64-w64-mingw32.txt builddir -Dbuildtype=release
-        env:
-          CCACHE_PREFIX: mingw32-
-
       - name: Configure (Debug)
-        if: matrix.build_type == 'Debug' && matrix.config.name != 'windows-MinGW'
+        if: matrix.build_type == 'Debug'
         run: meson setup builddir
 
       - name: Configure (Release)
-        if: matrix.build_type == 'Release' && matrix.config.name != 'windows-MinGW'
+        if: matrix.build_type == 'Release'
         run: meson setup builddir -Dbuildtype=release
 
       # compile
 
       - name: Compile
-        if: matrix.config.name != 'windows-MinGW'
+        if: matrix.config.name
         run: meson compile -C builddir
-
-      - name: Compile (MinGW)
-        if: matrix.config.name == 'windows-MinGW'
-        run: meson compile -C builddir
-        env:
-          CCACHE_PREFIX: mingw32-
 
       # upload artifacts
 

@@ -1,8 +1,8 @@
 [wrap-git]
-directory = psvm-3.0.1
+directory = psvm-3.0.2
 url = https://github.com/ethanl21/psvm.git
-revision = v3.0.1
-wrapdb_version = '3.0.1'
+revision = v3.0.2
+wrapdb_version = '3.0.2'
 depth = 1
 
 [provide]
